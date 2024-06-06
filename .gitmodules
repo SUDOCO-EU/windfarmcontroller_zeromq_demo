@@ -1,0 +1,3 @@
+[submodule "fastfarm_simulation/wind_turbines/IEA-22-280-RWT"]
+	path = fastfarm_simulation/wind_turbines/IEA-22-280-RWT
+	url = https://github.com/IEAWindTask37/IEA-22-280-RWT.git
