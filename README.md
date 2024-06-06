@@ -31,7 +31,6 @@ and then we clone and checkout version v2.9.0 of ROSCO from the GitHub repositor
 git clone https://github.com/NREL/ROSCO
 cd ROSCO
 git checkout v2.9.0
-cd ..
 ```
 
 We then compile the ROSCO controller with ZeroMQ.
@@ -71,7 +70,7 @@ cd ..
 Then, clone and install the repository at hand. This repository includes the IEA 22MW wind turbine files as a Git submodule, so you must perform a recursive clone with the handle `--recurse-submodules`, as follows.
 
 ```
-git clone --recurse-submodules https://github.com/Bartdoekemeijer/windfarmcontroller_zeromq_demo
+git clone --recurse-submodules https://github.com/SUDOCO-EU/windfarmcontroller_zeromq_demo
 cd windfarmcontroller_zeromq_demo
 pip install -e .
 cd ..
