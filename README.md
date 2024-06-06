@@ -68,10 +68,10 @@ pip install -e .
 cd ..
 ```
 
-Then, clone and install the repository at hand, as
+Then, clone and install the repository at hand. This repository includes the IEA 22MW wind turbine files as a Git submodule, so you must perform a recursive clone with the handle `--recurse-submodules`, as follows.
 
 ```
-git clone https://github.com/Bartdoekemeijer/windfarmcontroller_zeromq_demo
+git clone --recurse-submodules https://github.com/Bartdoekemeijer/windfarmcontroller_zeromq_demo
 cd windfarmcontroller_zeromq_demo
 pip install -e .
 cd ..
