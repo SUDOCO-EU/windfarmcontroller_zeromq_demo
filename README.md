@@ -1,13 +1,21 @@
 # Demonstration of the ZeroMQ-based wind farm controller in ROSCO
 
-The open-source [ROSCO](https://github.com/NREL/ROSCO) wind turbine controller includes a ZeroMQ communication interface that can send measurements and receive turbine control setpoints from an external source, e.g., a live-running Python or MATLAB script. This functionality is well suited for the implementation of a wind farm controller. This repository demonstrates how a Python-written wind farm controller can be tested in a FAST.Farm simulation in which the turbines are controlled using ROSCO for their turbine controllers.
+The open-source [ROSCO](https://github.com/NREL/ROSCO) wind turbine controller includes a [ZeroMQ](https://zeromq.org/) communication interface that can send measurements and receive turbine control setpoints from an external source, e.g., a live-running Python or MATLAB script. This functionality is well suited for the implementation of a wind farm controller. As part of the [European SUDOCO project](https://sudoco.eu/), this repository demonstrates how a Python-written wind farm controller can be tested in a FAST.Farm simulation in which the turbines are controlled using ROSCO for their turbine controllers.
 
-This repository is heavily based on a set of simulation files from Maarten van den Broek (Sowento).
+The wind farm controller in this example applies turbine yaw offsets for power maximization based on the measured freestream wind speed of the most upstream turbine. The wake steering optimization is done in real time with [FLORIS v3.6](https://github.com/NREL/floris/releases/tag/v3.6). A video of the simulation is shown below.
+
+
+
+https://github.com/SUDOCO-EU/windfarmcontroller_zeromq_demo/assets/22119448/342cbe37-34bd-466c-85a7-b9bfea3ed7dd
+
+
+
+This repository is heavily based on a set of simulation files from Maarten van den Broek ([Sowento](https://www.sowento.com/)).
 
 
 ## Installation
 
-We install the required dependencies in a dedicated Conda environment for ROSCO applications. Please ensure you have a recent and working installation of Conda. 
+We install the required dependencies in a dedicated Conda environment. Here, we use the . Please ensure you have a recent and working installation of Conda. 
 
 First, we install [ROSCO](https://github.com/nrel/ROSCO). You can follow the steps [here](https://rosco.readthedocs.io/en/latest/source/install.html), which in brief entail:
 
@@ -39,37 +47,8 @@ make install
 
 You should see something along the lines of...
 
-```
-Scanning dependencies of target zmq_client
-[  6%] Building C object CMakeFiles/zmq_client.dir/src/zmq_client.c.o
-/home/bartdoekemeijer/openfast_scripts/ROSCO/rosco/controller/src/zmq_client.c: In function 'delete_blank_spaces_in_string':
-/home/bartdoekemeijer/openfast_scripts/ROSCO/rosco/controller/src/zmq_client.c:14:16: warning: comparison between pointer and integer
-   14 |         if(s[i]==" "|| s[i]=="\t")
-      |                ^~
-/home/bartdoekemeijer/openfast_scripts/ROSCO/rosco/controller/src/zmq_client.c:14:28: warning: comparison between pointer and integer
-   14 |         if(s[i]==" "|| s[i]=="\t")
-      |                            ^~
-[  6%] Built target zmq_client
-Scanning dependencies of target discon
-[ 13%] Building Fortran object CMakeFiles/discon.dir/src/Constants.f90.o
-[ 20%] Building Fortran object CMakeFiles/discon.dir/src/ROSCO_Types.f90.o
-[ 26%] Building Fortran object CMakeFiles/discon.dir/src/Filters.f90.o
-[ 33%] Building Fortran object CMakeFiles/discon.dir/src/Functions.f90.o
-[ 40%] Building Fortran object CMakeFiles/discon.dir/src/ControllerBlocks.f90.o
-[ 46%] Building Fortran object CMakeFiles/discon.dir/src/Controllers.f90.o
-[ 53%] Building Fortran object CMakeFiles/discon.dir/src/SysFiles/SysGnuLinux.f90.o
-[ 60%] Building Fortran object CMakeFiles/discon.dir/src/ExtControl.f90.o
-[ 66%] Building Fortran object CMakeFiles/discon.dir/src/ROSCO_Helpers.f90.o
-[ 73%] Building Fortran object CMakeFiles/discon.dir/src/ReadSetParameters.f90.o
-[ 80%] Building Fortran object CMakeFiles/discon.dir/src/ROSCO_IO.f90.o
-[ 86%] Building Fortran object CMakeFiles/discon.dir/src/ZeroMQInterface.f90.o
-[ 93%] Building Fortran object CMakeFiles/discon.dir/src/DISCON.F90.o
-[100%] Linking Fortran shared library libdiscon.so
-[100%] Built target discon
-Install the project...
--- Install configuration: "RelWithDebInfo"
--- Installing: /home/bartdoekemeijer/openfast_scripts/ROSCO/rosco/controller/../../lib/libdiscon.so
-```
+![image](https://github.com/SUDOCO-EU/windfarmcontroller_zeromq_demo/assets/22119448/0146c856-693b-4c13-b1e4-fdd65c464f24)
+
 
 To finish installing ROSCO, pip install the package,
 
@@ -104,15 +83,15 @@ cd ..
 In principle, the entire simulation is set up to run out of the box. The only thing you must link is that you copy the ROSCO-compiled library (libdiscon.so) to the turbine controller files.
 
 ```
-cp /path/to/rosco/repository/rosco/lib/libdiscon.so ./windfarmcontroller_zeromq_demo/fastfarm_simulation/wind_turbines/turbine_controllers/libdiscon.T1.so
-cp /path/to/rosco/repository/rosco/lib/libdiscon.so ./windfarmcontroller_zeromq_demo/fastfarm_simulation/wind_turbines/turbine_controllers/libdiscon.T2.so
-cp /path/to/rosco/repository/rosco/lib/libdiscon.so ./windfarmcontroller_zeromq_demo/fastfarm_simulation/wind_turbines/turbine_controllers/libdiscon.T3.so
+cp ROSCO/rosco/lib/libdiscon.so windfarmcontroller_zeromq_demo/fastfarm_simulation/wind_turbines/turbine_controllers/libdiscon.T1.so
+cp ROSCO/rosco/lib/libdiscon.so windfarmcontroller_zeromq_demo/fastfarm_simulation/wind_turbines/turbine_controllers/libdiscon.T2.so
+cp ROSCO/rosco/lib/libdiscon.so windfarmcontroller_zeromq_demo/fastfarm_simulation/wind_turbines/turbine_controllers/libdiscon.T3.so
 ```
 
 Finally, to run the actual simulation, we must start the FAST.Farm simulation and the Python wind farm controller in parallel. We do that using the `&` operator in the Linux terminal.
 
 ```
-cd fastfarm_simulation
+cd windfarmcontroller_zeromq_demo/fastfarm_simulation
 (FAST.Farm FAST.Farm_IEA22MW.fstf) & (python "../wind_farm_controller/wake_steering_controller.py")
 ```
 
