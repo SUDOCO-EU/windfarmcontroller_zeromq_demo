@@ -30,7 +30,7 @@ and then we clone and checkout version v2.9.0 of ROSCO from the GitHub repositor
 ```
 git clone https://github.com/NREL/ROSCO
 cd ROSCO
-git checkout v2.9.0
+git checkout improve_wfc
 ```
 
 We then compile the ROSCO controller with ZeroMQ.

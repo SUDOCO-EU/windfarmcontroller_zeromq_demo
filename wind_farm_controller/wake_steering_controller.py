@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from wfc_zmq_server import wfc_zmq_server
+from rosco.toolbox.control_interface import wfc_zmq_server
 
 from floris.tools import FlorisInterface
 from floris.tools.optimization.yaw_optimization.yaw_optimizer_sr import YawOptimizationSR
@@ -98,7 +98,10 @@ class wfc_controller():
 
         # Perform the wake steering optimization in FLORIS
         fi = self.fi  # Load FLORIS from self
-        fi.reinitialize(wind_directions=[270.0], wind_speeds=[freestream_windspeed])  # Update ambient conditions
+        fi.reinitialize(
+            wind_directions=[270.0],
+            wind_speeds=[freestream_windspeed]
+        )  # Update ambient conditions
         yaw_opt = YawOptimizationSR(
             fi=fi,
             minimum_yaw_angle=-25.0,
